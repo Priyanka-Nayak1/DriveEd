@@ -17,7 +17,6 @@ const createOrder = async (req, res) => {
       courseId,
     } = req.body;
 
-    console.log("hi")
 
 
   
@@ -35,12 +34,9 @@ const createOrder = async (req, res) => {
       courseId,
     });
 
-    console.log(newlyCreatedCourseOrder)
 
-    console.log("hi")
 
     await newlyCreatedCourseOrder.save();
-    console.log("hi")
 
 
     const approveUrl="sdfsdf";
@@ -66,7 +62,6 @@ const capturePaymentAndFinalizeOrder = async (req, res) => {
     const { orderId } = req.body;
 
     let order = await Order.findById(orderId);
-    console.log(order)
 
     if (!order) {
       return res.status(404).json({

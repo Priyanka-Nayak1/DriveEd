@@ -10,7 +10,6 @@ const getAllStudentViewCourses = async (req, res) => {
       sortBy = "price-lowtohigh",
     } = req.query;
 
-    console.log(req.query, "req.query");
 
     let filters = {};
     if (category.length) {
@@ -91,8 +90,6 @@ const getStudentViewCourseDetails = async (req, res) => {
 const checkCoursePurchaseInfo = async (req, res) => {
   try {
     const { courseId, studentId } = req.params;
-    console.log(courseId);
-    console.log(studentId);
 
 
 
@@ -100,7 +97,6 @@ const checkCoursePurchaseInfo = async (req, res) => {
       userId: studentId,
     });
     
-    // console.log(studentCourses)
 
     const ifStudentAlreadyBoughtCurrentCourse =
       studentCourses?.courses?.findIndex((item) => item.courseId === courseId) > -1;

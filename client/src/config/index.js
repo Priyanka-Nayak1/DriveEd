@@ -48,6 +48,8 @@ export const initialSignUpFormData = {
   userName: "",
   userEmail: "",
   password: "",
+  faceDescriptor: null, 
+
 };
 
 export const languageOptions = [
