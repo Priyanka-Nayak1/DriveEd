@@ -8,7 +8,6 @@ export async function registerService(payload) {
         "Content-Type": "application/json",
       },
     });
-    console.log(res)
     return res.data;
   } catch (error) {
     return {
@@ -26,7 +25,6 @@ export const loginService = async (payload) => {
         "Content-Type": "application/json",
       },
     });
-    console.log(res)
     return res.data;
   } catch (error) {
     return {
@@ -124,7 +122,6 @@ export async function checkCoursePurchaseInfoService(courseId, studentId) {
 
   try {
     const res = await axiosInstance.get(`/student/course/purchase-info/${courseId}/${studentId}`);
-    console.log(res)
     return res.data;
   } catch (error) {
     return {

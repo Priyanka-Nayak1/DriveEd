@@ -10,10 +10,14 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { signInFormControls, signUpFormControls } from "@/config";
 import { AuthContext } from "@/context/auth-context";
 import logo from "../../assets/image/logo.jpg";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 function AuthPage() {
+  const [faceValue, setFaceValue] = useState([]);
+  const [registerFaceCaptured, setRegisterFaceCaptured] = useState(false);
+  const [loginFaceCaptured, setLoginFaceCaptured] = useState(false);
+
   const [activeTab, setActiveTab] = useState("signin");
   const {
     signInFormData,
@@ -56,12 +60,12 @@ function AuthPage() {
             className="h-12 w-12 mr-1 "
           />
           <span className="font-extrabold text-[20px] mr-1 md:text-2xl text-[#f6a818]">
-            Drive 
+            Drive
           </span>
-            <span className="font-extrabold text-[20px] md:text-2xl text-black">
+          <span className="font-extrabold text-[20px] md:text-2xl text-black">
             Ed.
           </span>
-          
+
         </Link>
       </header>
       <div className="flex items-center justify-center min-h-screen bg-background">
@@ -91,6 +95,9 @@ function AuthPage() {
                   setFormData={setSignInFormData}
                   isButtonDisabled={!checkIfSignInFormIsValid()}
                   handleSubmit={handleLoginUser}
+                  requireLoginFaceCapture={true}
+                  loginFaceCaptured={loginFaceCaptured}                 
+                  setLoginFaceCaptured={setLoginFaceCaptured}
                 />
               </CardContent>
             </Card>
@@ -111,6 +118,9 @@ function AuthPage() {
                   setFormData={setSignUpFormData}
                   isButtonDisabled={!checkIfSignUpFormIsValid()}
                   handleSubmit={handleRegisterUser}
+                  requireRegisterFaceCapture={true}
+                  registerFaceCaptured={registerFaceCaptured}                 
+                  setRegisterFaceCaptured={setRegisterFaceCaptured}
                 />
               </CardContent>
             </Card>
