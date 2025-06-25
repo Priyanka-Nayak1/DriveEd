@@ -179,16 +179,6 @@ function FaceCaptureModal({ onClose, onCapture }) {
                 }}
               />
 
-              {/* Nose tip red dot */}
-              {noseTip && (
-                <div
-                  className="absolute w-2 h-2 bg-red-600 rounded-full"
-                  style={{
-                    top: `${noseTip.y - 1}px`,
-                    left: `${noseTip.x - 1}px`,
-                  }}
-                />
-              )}
 
               {/* Detection status badge */}
               <div className="absolute top-2 right-2 px-2 py-1 text-xs rounded bg-white shadow-md border border-gray-300 font-medium">
