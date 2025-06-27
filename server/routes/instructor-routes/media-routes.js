@@ -47,6 +47,7 @@ router.delete("/delete/:id", async (req, res) => {
   }
 });
 
+
 router.post("/bulk-upload", upload.array("files", 10), async (req, res) => {
   try {
     const uploadPromises = req.files.map((fileItem) =>
@@ -60,7 +61,6 @@ router.post("/bulk-upload", upload.array("files", 10), async (req, res) => {
       data: results,
     });
   } catch (event) {
-    console.log(event);
 
     res
       .status(500)

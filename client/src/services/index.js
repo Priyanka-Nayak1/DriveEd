@@ -16,6 +16,22 @@ export async function registerService(payload) {
     };
   }
 }
+export async function getfaceId(id) {
+  try {
+    const res = await axiosInstance.get(`/student/course/faceId/${id}`, {
+
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    return res.data;
+  } catch (error) {
+    return {
+      success: false,
+      message: error.response?.data?.message || "Something went wrong",
+    };
+  }
+}
 
 export const loginService = async (payload) => {
   try {

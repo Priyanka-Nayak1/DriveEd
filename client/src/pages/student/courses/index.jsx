@@ -217,7 +217,7 @@ function StudentViewCoursesPage() {
                           courseItem?.curriculum?.length <= 1
                             ? "Lecture"
                             : "Lectures"
-                        } - ${courseItem?.level.toUpperCase()} Level`}
+                        } - ${courseItem?.level?.toUpperCase()} Level`}
                       </p>
                       <p className="font-bold text-lg">
                         ${courseItem?.pricing}

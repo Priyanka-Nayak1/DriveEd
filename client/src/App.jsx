@@ -90,7 +90,7 @@ function App() {
           element={<StudentViewCourseDetailsPage />}
         />
         <Route path="payment-return" element={<PaypalPaymentReturnPage />} />
-        <Route path="student-courses" element={<StudentCoursesPage />} />
+        <Route path="dashboard" element={<StudentCoursesPage />} />
         <Route
           path="course-progress/:id"
           element={<StudentViewCourseProgressPage />}

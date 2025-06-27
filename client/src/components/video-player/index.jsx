@@ -1,19 +1,25 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import ReactPlayer from "react-player";
 import * as faceapi from "face-api.js";
 import { Slider } from "../ui/slider";
 import { Button } from "../ui/button";
+import { AuthContext } from "@/context/auth-context";
 import {
   Play, Pause, RotateCcw, RotateCw,
   Volume2, VolumeX, Maximize, Minimize,
 } from "lucide-react";
+import { getfaceId } from "@/services";
 
-export default function VideoPlayerWithFaceDetection({ url, width = "100%", height = "100%" }) {
+export default function VideoPlayerWithFaceDetection({ url, width = "100%", height = "100%", onVideoComplete, onProgressUpdate }) {
   const playerRef = useRef(null);
   const videoContainerRef = useRef(null);
   const webcamRef = useRef(null);
   const faceInterval = useRef(null);
   const controlsTimeout = useRef(null);
+  const [targetDescriptor, setTargetDescriptor] = useState(null);
+  const { auth } = useContext(AuthContext);
+ const userId = auth.user._id;
+
 
   const [modelsLoaded, setModelsLoaded] = useState(false);
   const [faceFound, setFaceFound] = useState(false);
@@ -26,14 +32,20 @@ export default function VideoPlayerWithFaceDetection({ url, width = "100%", heig
   const [seeking, setSeeking] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
   const [showControls, setShowControls] = useState(true);
+  // const targetDescriptor = useRef([
+  //   // 128-length Float32Array values (example)
+  //   -0.067, 0.023, -0.011, ..., 0.081
+  // ]);
 
   // Load models
   useEffect(() => {
-    faceapi.nets.tinyFaceDetector.loadFromUri("/models").then(() => {
-      setModelsLoaded(true);
-    });
+    Promise.all([
+      faceapi.nets.tinyFaceDetector.loadFromUri("/models"),
+      faceapi.nets.faceRecognitionNet.loadFromUri("/models"),
+      faceapi.nets.faceLandmark68Net.loadFromUri("/models")
+    ]).then(() => setModelsLoaded(true));
   }, []);
-
+  
   // Setup webcam + detection
   useEffect(() => {
     if (!modelsLoaded) return;
@@ -43,13 +55,23 @@ export default function VideoPlayerWithFaceDetection({ url, width = "100%", heig
         webcamRef.current.play();
 
         faceInterval.current = setInterval(async () => {
-          const detection = await faceapi.detectSingleFace(webcamRef.current, new faceapi.TinyFaceDetectorOptions());
-          if (detection) {
-            setFaceFound(true);
+          if (!targetDescriptor) return;
+        
+          const detection = await faceapi
+            .detectSingleFace(webcamRef.current, new faceapi.TinyFaceDetectorOptions())
+            .withFaceLandmarks()
+            .withFaceDescriptor();
+        
+          if (detection?.descriptor) {
+            const distance = faceapi.euclideanDistance(detection.descriptor, targetDescriptor);
+            const THRESHOLD = 0.4;
+        
+            setFaceFound(distance < THRESHOLD);
           } else {
             setFaceFound(false);
           }
-        }, 300);
+        }, 500);
+        
       })
       .catch(console.error);
 
@@ -70,16 +92,23 @@ export default function VideoPlayerWithFaceDetection({ url, width = "100%", heig
   }
 
   function handleProgress(state) {
+
     if (!seeking) {
       let cur = state.played;
       setPlayed(cur);
       if (cur > maxPlayed) setMaxPlayed(cur);
+      if (onProgressUpdate) {
+        onProgressUpdate(prev => ({
+          ...prev,
+          progressValue: cur // or any logic you want
+        }));
+      }
     }
   }
 
   function handleRewind() {
     const ct = playerRef.current.getCurrentTime();
-    playerRef.current.seekTo(Math.max(ct - 5, 0));
+    playerRef.current.seekTo(ct - 5);
   }
 
   function handleForward() {
@@ -120,29 +149,30 @@ export default function VideoPlayerWithFaceDetection({ url, width = "100%", heig
     document.addEventListener("fullscreenchange", onFs);
     return () => document.removeEventListener("fullscreenchange", onFs);
   }, []);
-  
 
   const onMouseMove = () => {
     setShowControls(true);
     clearTimeout(controlsTimeout.current);
     controlsTimeout.current = setTimeout(() => setShowControls(false), 3000);
   };
-  useEffect(() => {
-    const askCameraAccess = async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-        if (videoRef.current) {
-          videoRef.current.srcObject = stream;
+  useEffect (() =>
+  {
+    async function fetchfaceId() {
+  
+        const response = await getfaceId(
+          auth?.user?._id,
+        );
+        if (response?.success) {
+          setTargetDescriptor(new Float32Array(response?.data));
         }
-        setStatus("granted");
-      } catch (err) {
-        console.error("Camera access denied or error:", err);
-        setStatus("denied");
-      }
-    };
+      
+    }
+    fetchfaceId();
+    
 
-    askCameraAccess();
-  }, []);
+  },[modelsLoaded])  
+  
+
 
   return (
     <div
@@ -194,7 +224,7 @@ export default function VideoPlayerWithFaceDetection({ url, width = "100%", heig
 
       {!faceFound && (
         <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 text-white font-semibold">
-          Face not detected — video is paused
+          {`Your face is not detected, ${auth.user.userName}`}
         </div>
       )}
     </div>

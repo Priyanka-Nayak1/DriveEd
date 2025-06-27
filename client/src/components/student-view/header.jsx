@@ -31,12 +31,19 @@ function StudentViewCommonHeader() {
           </span>
         </Link>
       </div>
-      <div className="flex items-center space-x-4">
+      {/* <div className="flex items-center space-x-4">
         <div className="flex gap-4 items-center">
 
+          <Button onClick={()=>navigate("/dashboard")}>Dashboard</Button>
+        </div>
+      </div> */}
+      <div className="flex items-center space-x-4">
+        <div className="flex gap-4 items-center">
+        <Button onClick={()=>navigate("/dashboard")}>Dashboard</Button>
           <Button onClick={handleLogout}>Sign Out</Button>
         </div>
       </div>
+
     </header>
   );
 }

@@ -50,7 +50,7 @@ const registerUser = async (req, res) => {
 
 
 const loginUser = async (req, res) => {
-  const { userEmail, password, faceDescriptor } = req.body;
+  const { userEmail, password } = req.body;
 
   // 1. Find user by email
   const checkUser = await User.findOne({ userEmail });
@@ -71,19 +71,19 @@ const loginUser = async (req, res) => {
   }
 
   // 3. Compare face descriptor (Euclidean distance)
-  const euclideanDistance = (a, b) =>
-    Math.sqrt(a.reduce((sum, val, i) => sum + (val - b[i]) ** 2, 0));
+  // const euclideanDistance = (a, b) =>
+  //   Math.sqrt(a.reduce((sum, val, i) => sum + (val - b[i]) ** 2, 0));
 
-  const distance = euclideanDistance(faceDescriptor, checkUser.faceDescriptor);
-  const threshold = 0.45;
-  const isFaceMatch = distance < threshold;
+  // const distance = euclideanDistance(faceDescriptor, checkUser.faceDescriptor);
+  // const threshold = 0.45;
+  // const isFaceMatch = distance < threshold;
 
-  if (!isFaceMatch) {
-    return res.status(403).json({
-      success: false,
-      message: "Face is not matching", // Face mismatch
-    });
-  }
+  // if (!isFaceMatch) {
+  //   return res.status(403).json({
+  //     success: false,
+  //     message: "Face is not matching", // Face mismatch
+  //   });
+  // }
 
   // 4. Generate token and respond
   const accessToken = jwt.sign(

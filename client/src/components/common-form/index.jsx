@@ -16,6 +16,8 @@ function CommonForm({
   setRegisterFaceCaptured,
   loginFaceCaptured,
   setLoginFaceCaptured,
+  setIsPasswordValid,
+  isPasswordValid
 }) {
   const [showCaptureDialog, setShowCaptureDialog] = useState(false);
 
@@ -47,6 +49,9 @@ function CommonForm({
         formControls={formControls}
         formData={formData}
         setFormData={setFormData}
+        setIsPasswordValid={setIsPasswordValid}
+        isPasswordValid={isPasswordValid}
+
       />
 
       {showFaceCheckbox && (
@@ -76,7 +81,7 @@ function CommonForm({
         disabled={
           isButtonDisabled ||
           (requireRegisterFaceCapture && !registerFaceCaptured) ||
-          (requireLoginFaceCapture && !loginFaceCaptured)
+          (requireLoginFaceCapture && !loginFaceCaptured) || !isPasswordValid
         }
         type="submit"
         className="mt-5 w-full"

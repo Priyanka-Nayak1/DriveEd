@@ -17,6 +17,8 @@ function AuthPage() {
   const [faceValue, setFaceValue] = useState([]);
   const [registerFaceCaptured, setRegisterFaceCaptured] = useState(false);
   const [loginFaceCaptured, setLoginFaceCaptured] = useState(false);
+  const [isPasswordValid,setIsPasswordValid]= useState(false)
+
 
   const [activeTab, setActiveTab] = useState("signin");
   const {
@@ -95,9 +97,10 @@ function AuthPage() {
                   setFormData={setSignInFormData}
                   isButtonDisabled={!checkIfSignInFormIsValid()}
                   handleSubmit={handleLoginUser}
-                  requireLoginFaceCapture={true}
                   loginFaceCaptured={loginFaceCaptured}                 
                   setLoginFaceCaptured={setLoginFaceCaptured}
+                  setIsPasswordValid={setIsPasswordValid}
+                  isPasswordValid={isPasswordValid}
                 />
               </CardContent>
             </Card>
@@ -121,6 +124,9 @@ function AuthPage() {
                   requireRegisterFaceCapture={true}
                   registerFaceCaptured={registerFaceCaptured}                 
                   setRegisterFaceCaptured={setRegisterFaceCaptured}
+                  setIsPasswordValid={setIsPasswordValid}
+                  isPasswordValid={isPasswordValid}
+
                 />
               </CardContent>
             </Card>

@@ -52,10 +52,6 @@ function StudentHomePage() {
 
   }
 
-
-
-
-
   useEffect(() => {
 
     // Call the function only once
